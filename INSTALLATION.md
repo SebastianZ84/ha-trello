@@ -53,20 +53,17 @@ This is an enhanced version of the Home Assistant Trello integration that adds v
 
 ### Step 1: Frontend Resources
 
-The frontend resources should load automatically with the integration. If you get "Custom element not found" errors:
+The frontend resources should load automatically when HACS installs the integration to `/config/www/community/trello_enhanced/`. 
 
-1. **Restart Home Assistant** after installing/updating the integration
+**If you get "Custom element not found" errors:**
+
+1. **Restart Home Assistant** after installing/updating
 2. **Clear browser cache** (Ctrl+F5)
-3. **Check browser console** (F12) for loading errors
+3. **Check that files exist**: `/config/www/community/trello_enhanced/trello-board-card.js`
 
-**Manual setup (if automatic doesn't work):**
-```yaml
-# Add to configuration.yaml if needed
-frontend:
-  extra_module_url:
-    - /local/trello_enhanced/trello-board-card.js
-    - /local/trello_enhanced/trello-board-card-editor.js
-```
+**Manual verification:**
+- Files should be at: `/config/www/community/trello_enhanced/`
+- Accessible at: `http://your-ha:8123/local/community/trello_enhanced/trello-board-card.js`
 
 ### Step 2: Add to Dashboard
 
