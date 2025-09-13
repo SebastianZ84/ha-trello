@@ -72,9 +72,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         DOMAIN, "create_card", async_create_card, schema=CREATE_CARD_SERVICE_SCHEMA
     )
 
-    # Register frontend resources (HACS will handle www files automatically)
-    add_extra_js_url(hass, "/local/community/trello_enhanced/trello-board-card.js")
-    add_extra_js_url(hass, "/local/community/trello_enhanced/trello-board-card-editor.js")
+    # Frontend resources need to be loaded manually - see INSTALLATION.md
+    # HACS installation requires manual configuration.yaml setup
+    pass
 
     return True
 
