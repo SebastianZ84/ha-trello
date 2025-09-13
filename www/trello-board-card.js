@@ -286,19 +286,44 @@ class TrelloBoardCard extends HTMLElement {
   }
 
   _getBoardData(boardId) {
-    const entities = Object.values(this._hass.states).filter(
-      entity => entity.entity_id.startsWith('sensor.trello_') && 
-      entity.attributes.device_id === boardId
+    // Look for the board sensor
+    const boardSensor = Object.values(this._hass.states).find(
+      entity => entity.entity_id.includes(`board_${boardId}`) && 
+      entity.attributes.board_data
     );
 
-    if (entities.length === 0) return null;
+    if (boardSensor && boardSensor.attributes.board_data) {
+      return boardSensor.attributes.board_data;
+    }
 
-    // Get board data from coordinator via the first entity
-    const firstEntity = entities[0];
-    const coordinatorData = this._hass.data?.trello?.coordinator?.data;
-    
-    if (coordinatorData && coordinatorData[boardId]) {
-      return coordinatorData[boardId];
+    // Fallback: try to find any sensor with matching board_id
+    const fallbackSensor = Object.values(this._hass.states).find(
+      entity => entity.attributes.board_id === boardId
+    );
+
+    if (fallbackSensor && fallbackSensor.attributes.board_id === boardId) {
+      // Try to construct board data from individual list sensors
+      const listSensors = Object.values(this._hass.states).filter(
+        entity => entity.attributes.board_id === boardId && entity.attributes.cards
+      );
+
+      if (listSensors.length > 0) {
+        const lists = {};
+        listSensors.forEach(sensor => {
+          lists[sensor.attributes.list_id] = {
+            id: sensor.attributes.list_id,
+            name: sensor.attributes.list_name,
+            card_count: sensor.state,
+            cards: sensor.attributes.cards
+          };
+        });
+
+        return {
+          id: boardId,
+          name: fallbackSensor.attributes.board_name,
+          lists: lists
+        };
+      }
     }
 
     return null;
