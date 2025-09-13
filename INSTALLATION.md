@@ -51,19 +51,30 @@ This is an enhanced version of the Home Assistant Trello integration that adds v
 
 ## Using the Board Display
 
-### Step 1: Frontend Resources
+### Step 1: Frontend Resources Setup (REQUIRED)
 
-The frontend resources should load automatically when HACS installs the integration to `/config/www/community/trello_enhanced/`. 
+The frontend files need to be manually copied since HACS doesn't handle www files for integrations:
 
-**If you get "Custom element not found" errors:**
+**Manual Installation:**
+1. **Download the JavaScript files** from the GitHub repository:
+   - `www/trello-board-card.js`
+   - `www/trello-board-card-editor.js`
 
-1. **Restart Home Assistant** after installing/updating
-2. **Clear browser cache** (Ctrl+F5)
-3. **Check that files exist**: `/config/www/community/trello_enhanced/trello-board-card.js`
+2. **Copy files to your Home Assistant:**
+   ```bash
+   # Create directory
+   mkdir -p /root/config/www/community/trello_enhanced/
+   
+   # Copy files (adjust paths as needed)
+   cp trello-board-card.js /root/config/www/community/trello_enhanced/
+   cp trello-board-card-editor.js /root/config/www/community/trello_enhanced/
+   ```
 
-**Manual verification:**
-- Files should be at: `/config/www/community/trello_enhanced/`
-- Accessible at: `http://your-ha:8123/local/community/trello_enhanced/trello-board-card.js`
+3. **Verify files are accessible:**
+   - Visit: `http://your-ha:8123/local/community/trello_enhanced/trello-board-card.js`
+   - Should show the JavaScript code
+
+4. **Restart Home Assistant** and **clear browser cache** (Ctrl+F5)
 
 ### Step 2: Add to Dashboard
 
