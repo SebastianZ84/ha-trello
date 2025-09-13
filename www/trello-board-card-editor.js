@@ -39,4 +39,4 @@ class TrelloBoardCardEditor extends HTMLElement {
   }
 }
 
-customElements.define('trello-board-card-editor', TrelloBoardCardEditor);
+customElements.define('trello-board-editor', TrelloBoardCardEditor);

@@ -9,5 +9,5 @@
   "issue_tracker": "https://github.com/SebastianZ84/ha-trello/issues",
   "loggers": ["trello"],
   "requirements": ["ha-py-trello==0.24.1"],
-  "version": "1.0.5"
+  "version": "1.0.6"
 }

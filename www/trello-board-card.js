@@ -334,7 +334,7 @@ class TrelloBoardCard extends HTMLElement {
   }
 
   static getConfigElement() {
-    return document.createElement('trello-board-card-editor');
+    return document.createElement('trello-board-editor');
   }
 
   static getStubConfig() {
@@ -344,7 +344,7 @@ class TrelloBoardCard extends HTMLElement {
   }
 }
 
-customElements.define('trello-board-card', TrelloBoardCard);
+customElements.define('trello-board', TrelloBoardCard);
 
 // Register the card
 window.customCards = window.customCards || [];
