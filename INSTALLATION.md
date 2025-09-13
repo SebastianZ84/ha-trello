@@ -51,30 +51,15 @@ This is an enhanced version of the Home Assistant Trello integration that adds v
 
 ## Using the Board Display
 
-### Step 1: Frontend Resources Setup (REQUIRED)
+The visual board display is now available as a separate HACS frontend plugin:
 
-The frontend files need to be manually copied since HACS doesn't handle www files for integrations:
+### Step 1: Install the Frontend Card
 
-**Manual Installation:**
-1. **Download the JavaScript files** from the GitHub repository:
-   - `www/trello-board-card.js`
-   - `www/trello-board-card-editor.js`
-
-2. **Copy files to your Home Assistant:**
-   ```bash
-   # Create directory
-   mkdir -p /root/config/www/community/trello_enhanced/
-   
-   # Copy files (adjust paths as needed)
-   cp trello-board-card.js /root/config/www/community/trello_enhanced/
-   cp trello-board-card-editor.js /root/config/www/community/trello_enhanced/
-   ```
-
-3. **Verify files are accessible:**
-   - Visit: `http://your-ha:8123/local/community/trello_enhanced/trello-board-card.js`
-   - Should show the JavaScript code
-
-4. **Restart Home Assistant** and **clear browser cache** (Ctrl+F5)
+**Install via HACS:**
+1. **HACS** → **Frontend** → **Custom repositories**
+2. **Repository**: `https://github.com/SebastianZ84/ha-trello-card`
+3. **Category**: `Lovelace`
+4. **Add** and **Install**
 
 ### Step 2: Add to Dashboard
 
