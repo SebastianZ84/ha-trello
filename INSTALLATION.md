@@ -51,34 +51,21 @@ This is an enhanced version of the Home Assistant Trello integration that adds v
 
 ## Using the Board Display
 
-### Step 1: Add Frontend Resources (REQUIRED)
+### Step 1: Frontend Resources
 
-The custom Lovelace card requires manual frontend resource setup:
+The frontend resources should load automatically with the integration. If you get "Custom element not found" errors:
 
-**Add to your `configuration.yaml`:**
+1. **Restart Home Assistant** after installing/updating the integration
+2. **Clear browser cache** (Ctrl+F5)
+3. **Check browser console** (F12) for loading errors
+
+**Manual setup (if automatic doesn't work):**
 ```yaml
+# Add to configuration.yaml if needed
 frontend:
   extra_module_url:
-    - /local/community/trello_enhanced/trello-board-card.js
-    - /local/community/trello_enhanced/trello-board-card-editor.js
-```
-
-**Important:** 
-- **Restart Home Assistant** after adding these lines
-- **Clear browser cache** (Ctrl+F5) after restart
-- **Check browser console** (F12) for any loading errors
-
-**Alternative method if HACS path doesn't work:**
-1. Copy files from HACS installation to `/config/www/`:
-   - Find: `/config/custom_components/trello_enhanced/www/trello-board-card.js`
-   - Copy to: `/config/www/trello-board-card.js` 
-   - Same for editor file
-2. Update configuration.yaml:
-```yaml
-frontend:
-  extra_module_url:
-    - /local/trello-board-card.js
-    - /local/trello-board-card-editor.js
+    - /local/trello_enhanced/trello-board-card.js
+    - /local/trello_enhanced/trello-board-card-editor.js
 ```
 
 ### Step 2: Add to Dashboard

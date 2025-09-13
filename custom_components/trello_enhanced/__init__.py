@@ -8,7 +8,9 @@ from homeassistant.const import CONF_API_KEY, CONF_API_TOKEN, Platform
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import config_validation as cv
 from homeassistant.components.frontend import add_extra_js_url
+from homeassistant.components.http.static import StaticPathConfig
 import voluptuous as vol
+import os
 
 from .const import CONF_BOARD_IDS, DOMAIN
 from .coordinator import TrelloDataUpdateCoordinator
@@ -72,9 +74,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         DOMAIN, "create_card", async_create_card, schema=CREATE_CARD_SERVICE_SCHEMA
     )
 
-    # Frontend resources need to be loaded manually - see INSTALLATION.md
-    # HACS installation requires manual configuration.yaml setup
-    pass
+    # Register static path for www files and frontend resources
+    www_path = os.path.join(os.path.dirname(__file__), "www")
+    if os.path.exists(www_path):
+        hass.http.register_static_path(
+            f"/local/{DOMAIN}", www_path, cache_headers=False
+        )
+        # Register frontend resources using the static path
+        add_extra_js_url(hass, f"/local/{DOMAIN}/trello-board-card.js")
+        add_extra_js_url(hass, f"/local/{DOMAIN}/trello-board-card-editor.js")
 
     return True
 
