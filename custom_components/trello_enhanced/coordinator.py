@@ -38,7 +38,6 @@ class TrelloDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Board]]):
         for board_id in self.board_ids:
             batch_requests.append(BatchBoard.GetBoard(board_id, ['name']))
             batch_requests.append(BatchBoard.GetLists(board_id, ['name'], 'open', ['cards']))
-            batch_requests.append(BatchBoard.GetCards(board_id, ['name', 'desc', 'due', 'idList']))
         LOGGER.debug("Fetching boards lists")
         batch_responses = self.client.fetch_batch(batch_requests)
 
@@ -51,24 +50,21 @@ class TrelloDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Board]]):
 
 def _get_boards(batch_response: list[dict], board_ids: list[str]) -> dict[str, Board]:
     board_id_boards: dict[str, Board] = {}
-    for i, batch_response_triple in enumerate(
-        zip(batch_response[::3], batch_response[1::3], batch_response[2::3])
+    for i, batch_response_pair in enumerate(
+        zip(batch_response[::2], batch_response[1::2])
     ):
-        board_response = batch_response_triple[0]
-        list_response = batch_response_triple[1] 
-        card_response = batch_response_triple[2]
-        if board_response.success and list_response.success and card_response.success:
+        board_response = batch_response_pair[0]
+        list_response = batch_response_pair[1]
+        if board_response.success and list_response.success:
             board = board_response.payload
             lists = list_response.payload
-            cards = card_response.payload
-            board_id_boards[board.id] = _get_board(board, lists, cards)
+            board_id_boards[board.id] = _get_board(board, lists)
         else:
             LOGGER.error(
-                "Unable to fetch data for board with ID '%s'. Board: %s, Lists: %s, Cards: %s",
+                "Unable to fetch data for board with ID '%s'. Board: %s, Lists: %s",
                 board_ids[i],
                 board_response.success,
-                list_response.success, 
-                card_response.success,
+                list_response.success,
             )
             board_id_boards[board_ids[i]] = Board(board_ids[i], "", {})
             continue
@@ -76,23 +72,7 @@ def _get_boards(batch_response: list[dict], board_ids: list[str]) -> dict[str, B
     return board_id_boards
 
 
-def _get_board(board: TrelloBoard, lists: list[TrelloList], cards: list) -> Board:
-    # Group cards by list ID
-    cards_by_list = {}
-    for card in cards:
-        list_id = card.idList
-        if list_id not in cards_by_list:
-            cards_by_list[list_id] = []
-        cards_by_list[list_id].append(
-            Card(
-                id=card.id,
-                name=card.name,
-                desc=card.desc,
-                due=getattr(card, 'due', None),
-                list_id=list_id
-            )
-        )
-    
+def _get_board(board: TrelloBoard, lists: list[TrelloList]) -> Board:
     return Board(
         board.id,
         board.name,
@@ -100,8 +80,17 @@ def _get_board(board: TrelloBoard, lists: list[TrelloList], cards: list) -> Boar
             list_.id: List(
                 list_.id, 
                 list_.name, 
-                len(cards_by_list.get(list_.id, [])),
-                cards_by_list.get(list_.id, [])
+                len(list_.cards),
+                [
+                    Card(
+                        id=card.id,
+                        name=card.name,
+                        desc=getattr(card, 'desc', ''),
+                        due=getattr(card, 'due', None),
+                        list_id=list_.id
+                    )
+                    for card in list_.cards
+                ]
             )
             for list_ in lists
         },

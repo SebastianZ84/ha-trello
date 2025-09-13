@@ -3,10 +3,10 @@
   "name": "Trello Enhanced",
   "codeowners": ["@scottg489"],
   "config_flow": true,
-  "documentation": "http://gitlab.home/home/ha-trello",
+  "documentation": "https://github.com/SebastianZ84/ha-trello",
   "integration_type": "service",
   "iot_class": "cloud_polling",
-  "issue_tracker": "http://gitlab.home/home/ha-trello/-/issues",
+  "issue_tracker": "https://github.com/SebastianZ84/ha-trello/issues",
   "loggers": ["trello"],
   "requirements": ["ha-py-trello==0.24.1"],
   "version": "1.0.2"
