@@ -1,0 +1,40 @@
+move_card:
+  name: Move Card
+  description: Move a Trello card to a different list
+  fields:
+    card_id:
+      name: Card ID
+      description: The ID of the card to move
+      required: true
+      selector:
+        text:
+    target_list_id:
+      name: Target List ID
+      description: The ID of the list to move the card to
+      required: true
+      selector:
+        text:
+
+create_card:
+  name: Create Card
+  description: Create a new Trello card in a list
+  fields:
+    list_id:
+      name: List ID
+      description: The ID of the list to create the card in
+      required: true
+      selector:
+        text:
+    name:
+      name: Card Name
+      description: The name of the new card
+      required: true
+      selector:
+        text:
+    description:
+      name: Card Description
+      description: The description of the new card
+      required: false
+      selector:
+        text:
+          multiline: true
