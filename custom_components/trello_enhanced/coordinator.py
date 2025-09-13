@@ -6,10 +6,7 @@ from datetime import timedelta
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-from trello import Board as TrelloBoard
-from trello import List as TrelloList
 from trello import TrelloClient
-from trello.batch.board import Board as BatchBoard
 
 from .const import LOGGER, Board, List, Card
 
@@ -33,65 +30,47 @@ class TrelloDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Board]]):
         self.board_ids = board_ids
 
     def _update(self) -> dict[str, Board]:
-        """Fetch data for all sensors as a batch."""
-        batch_requests = []
+        """Fetch data for all boards."""
+        board_id_boards: dict[str, Board] = {}
+        
         for board_id in self.board_ids:
-            batch_requests.append(BatchBoard.GetBoard(board_id, ['name']))
-            batch_requests.append(BatchBoard.GetLists(board_id, ['name'], 'open', ['cards']))
-        LOGGER.debug("Fetching boards lists")
-        batch_responses = self.client.fetch_batch(batch_requests)
-
-        return _get_boards(batch_responses, self.board_ids)
+            try:
+                LOGGER.debug("Fetching board %s", board_id)
+                board = self.client.get_board(board_id)
+                lists = board.list_lists(list_filter='open')
+                
+                # Get cards for each list
+                board_lists = {}
+                for trello_list in lists:
+                    cards = trello_list.list_cards()
+                    card_objects = [
+                        Card(
+                            id=card.id,
+                            name=card.name,
+                            desc=getattr(card, 'desc', ''),
+                            due=getattr(card, 'due', None),
+                            list_id=trello_list.id
+                        )
+                        for card in cards
+                    ]
+                    
+                    board_lists[trello_list.id] = List(
+                        trello_list.id,
+                        trello_list.name,
+                        len(card_objects),
+                        card_objects
+                    )
+                
+                board_id_boards[board_id] = Board(board_id, board.name, board_lists)
+                
+            except Exception as e:
+                LOGGER.error("Unable to fetch board %s: %s", board_id, e)
+                board_id_boards[board_id] = Board(board_id, "", {})
+        
+        return board_id_boards
 
     async def _async_update_data(self) -> dict[str, Board]:
         """Send request to the executor."""
         return await self.hass.async_add_executor_job(self._update)
 
 
-def _get_boards(batch_response: list[dict], board_ids: list[str]) -> dict[str, Board]:
-    board_id_boards: dict[str, Board] = {}
-    for i, batch_response_pair in enumerate(
-        zip(batch_response[::2], batch_response[1::2])
-    ):
-        board_response = batch_response_pair[0]
-        list_response = batch_response_pair[1]
-        if board_response.success and list_response.success:
-            board = board_response.payload
-            lists = list_response.payload
-            board_id_boards[board.id] = _get_board(board, lists)
-        else:
-            LOGGER.error(
-                "Unable to fetch data for board with ID '%s'. Board: %s, Lists: %s",
-                board_ids[i],
-                board_response.success,
-                list_response.success,
-            )
-            board_id_boards[board_ids[i]] = Board(board_ids[i], "", {})
-            continue
-
-    return board_id_boards
-
-
-def _get_board(board: TrelloBoard, lists: list[TrelloList]) -> Board:
-    return Board(
-        board.id,
-        board.name,
-        {
-            list_.id: List(
-                list_.id, 
-                list_.name, 
-                len(list_.cards),
-                [
-                    Card(
-                        id=card.id,
-                        name=card.name,
-                        desc=getattr(card, 'desc', ''),
-                        due=getattr(card, 'due', None),
-                        list_id=list_.id
-                    )
-                    for card in list_.cards
-                ]
-            )
-            for list_ in lists
-        },
-    )
