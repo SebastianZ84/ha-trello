@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import logging
 from typing import Final
 
-DOMAIN: Final = "trello_enhanced"
+DOMAIN: Final = "trello"
 
 LOGGER = logging.getLogger(__package__)
 
