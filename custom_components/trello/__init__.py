@@ -27,6 +27,12 @@ CREATE_CARD_SERVICE_SCHEMA = vol.Schema({
     vol.Optional("description", default=""): cv.string,
 })
 
+UPDATE_CARD_SERVICE_SCHEMA = vol.Schema({
+    vol.Required("card_id"): cv.string,
+    vol.Required("name"): cv.string,
+    vol.Optional("description", default=""): cv.string,
+})
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up from a config entry."""
@@ -65,11 +71,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
         await trello_coordinator.async_request_refresh()
 
+    async def async_update_card(call: ServiceCall) -> None:
+        """Update a card's name and description."""
+        card_id = call.data["card_id"]
+        name = call.data["name"]
+        description = call.data.get("description", "")
+        
+        await hass.async_add_executor_job(
+            _update_card_sync, trello_client, card_id, name, description
+        )
+        await trello_coordinator.async_request_refresh()
+
     hass.services.async_register(
         DOMAIN, "move_card", async_move_card, schema=MOVE_CARD_SERVICE_SCHEMA
     )
     hass.services.async_register(
         DOMAIN, "create_card", async_create_card, schema=CREATE_CARD_SERVICE_SCHEMA
+    )
+    hass.services.async_register(
+        DOMAIN, "update_card", async_update_card, schema=UPDATE_CARD_SERVICE_SCHEMA
     )
 
     # Frontend card is now a separate HACS plugin: ha-trello-card
@@ -105,6 +125,13 @@ def _create_card_sync(client: TrelloClient, list_id: str, name: str, description
     """Create card synchronously."""
     target_list = client.get_list(list_id)
     target_list.add_card(name, desc=description)
+
+
+def _update_card_sync(client: TrelloClient, card_id: str, name: str, description: str) -> None:
+    """Update card synchronously."""
+    card = client.get_card(card_id)
+    card.set_name(name)
+    card.set_description(description)
 
 
 class TrelloAdapter:

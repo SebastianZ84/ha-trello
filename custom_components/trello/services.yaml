@@ -38,3 +38,27 @@ create_card:
       selector:
         text:
           multiline: true
+
+update_card:
+  name: Update Card
+  description: Update a Trello card's name and description
+  fields:
+    card_id:
+      name: Card ID
+      description: The ID of the card to update
+      required: true
+      selector:
+        text:
+    name:
+      name: Card Name
+      description: The new name for the card
+      required: true
+      selector:
+        text:
+    description:
+      name: Card Description
+      description: The new description for the card
+      required: false
+      selector:
+        text:
+          multiline: true
