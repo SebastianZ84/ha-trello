@@ -1,7 +1,7 @@
 {
   "domain": "trello",
   "name": "Trello Enhanced",
-  "codeowners": ["@scottg489"],
+  "codeowners": ["@SebastianZ84"],
   "config_flow": true,
   "documentation": "https://github.com/SebastianZ84/ha-trello",
   "integration_type": "service",
@@ -9,5 +9,5 @@
   "issue_tracker": "https://github.com/SebastianZ84/ha-trello/issues",
   "loggers": ["trello"],
   "requirements": ["ha-py-trello==0.24.1"],
-  "version": "1.3.0"
+  "version": "1.0.0"
 }
