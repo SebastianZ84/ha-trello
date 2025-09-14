@@ -54,7 +54,7 @@ class TrelloSensor(CoordinatorEntity[TrelloDataUpdateCoordinator], SensorEntity)
 
     @property
     def extra_state_attributes(self) -> dict:
-        """Return extra state attributes."""
+        """Return extra state attributes - lightweight reference to board sensor."""
         board_data = self.coordinator.data[self.board.id]
         list_data = board_data.lists[self.list_id]
         return {
@@ -62,15 +62,9 @@ class TrelloSensor(CoordinatorEntity[TrelloDataUpdateCoordinator], SensorEntity)
             "board_name": board_data.name,
             "list_id": self.list_id,
             "list_name": list_data.name,
-            "cards": [
-                {
-                    "id": card.id,
-                    "name": card.name,
-                    "desc": card.desc,
-                    "due": card.due
-                }
-                for card in list_data.cards
-            ]
+            "board_entity": f"sensor.{board_data.name.lower().replace(' ', '_').replace('-', '_')}_board",
+            # Card data removed - reference board sensor instead
+            "card_count": list_data.card_count
         }
 
     @callback
