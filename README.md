@@ -30,6 +30,8 @@ This integration pairs perfectly with the [Trello Board Card](https://github.com
 
 ## Prerequisites
 
+Before setting up this integration, you need to get credentials by creating an Integration in Trello's Power-Up Admin Portal.
+
 Before installing, you'll need:
 
 1. A Trello account
