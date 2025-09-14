@@ -1,6 +1,6 @@
 {
   "domain": "trello",
-  "name": "Trello Enhanced",
+  "name": "Trello",
   "codeowners": ["@SebastianZ84"],
   "config_flow": true,
   "documentation": "https://github.com/SebastianZ84/ha-trello",

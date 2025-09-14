@@ -1,4 +1,4 @@
-# Trello Enhanced Integration for Home Assistant
+# Trello Integration for Home Assistant
 
 A complete Home Assistant integration for Trello that provides enhanced board monitoring, card management, and visual board display capabilities.
 
@@ -90,7 +90,7 @@ curl "https://api.trello.com/1/members/me/boards?key=YOUR_API_KEY&token=YOUR_API
 
 1. **Go to Settings** → **Devices & Services**
 2. **Click "Add Integration"** 
-3. **Search for "Trello Enhanced"**
+3. **Search for "Trello"**
 4. **Enter your credentials**:
    - **API Key**: From Step 1 above
    - **API Token**: From Step 2 above

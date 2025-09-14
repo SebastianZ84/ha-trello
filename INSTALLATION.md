@@ -1,4 +1,4 @@
-# Trello Enhanced - Installation Guide
+# Trello Integration - Installation Guide
 
 This is an enhanced version of the Home Assistant Trello integration that adds visual board display and card movement capabilities.
 
@@ -17,7 +17,7 @@ This is an enhanced version of the Home Assistant Trello integration that adds v
 
 ### Step 2: Install the Integration
 
-1. In HACS → Integrations, search for "**Trello Enhanced**"
+1. In HACS → Integrations, search for "**Trello**"
 2. Click **Download**
 3. Restart Home Assistant
 
@@ -31,7 +31,7 @@ This is an enhanced version of the Home Assistant Trello integration that adds v
    - **API Token**: Generate from the same portal
 5. Select the boards you want to monitor
 
-## What's New in the Enhanced Version
+## What's New in This Integration
 
 ### 🎯 **Visual Board Display**
 - Interactive Kanban board view in Home Assistant
@@ -45,7 +45,7 @@ This is an enhanced version of the Home Assistant Trello integration that adds v
 - Add new cards directly from Home Assistant
 - Click the "+" button in any list
 
-### 🎯 **Enhanced Data**
+### 🎯 **Rich Data**
 - Card details include descriptions and due dates
 - Complete card information available in sensor attributes
 
@@ -130,5 +130,5 @@ For issues with this enhanced version, check:
 2. Browser console for frontend errors  
 3. Verify all files are installed correctly
 
-Original integration by [@scottg489](https://github.com/ScottG489/ha-trello)  
-Enhanced with board display and card movement capabilities.
+Complete integration rewrite by Sebastian Zabel (@SebastianZ84)  
+Full board display and card management capabilities.
