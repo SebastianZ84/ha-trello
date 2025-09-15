@@ -33,6 +33,10 @@ UPDATE_CARD_SERVICE_SCHEMA = vol.Schema({
     vol.Optional("description", default=""): cv.string,
 })
 
+DELETE_CARD_SERVICE_SCHEMA = vol.Schema({
+    vol.Required("card_id"): cv.string,
+})
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up from a config entry."""
@@ -42,7 +46,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         api_key=config_data[CONF_API_KEY],
         api_secret=config_data[CONF_API_TOKEN],
     )
-    trello_coordinator = TrelloDataUpdateCoordinator(hass, trello_client, config_boards)
+    trello_coordinator = TrelloDataUpdateCoordinator(hass, trello_client, config_boards, entry)
     await trello_coordinator.async_config_entry_first_refresh()
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = trello_coordinator
 
@@ -82,6 +86,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
         await trello_coordinator.async_request_refresh()
 
+    async def async_delete_card(call: ServiceCall) -> None:
+        """Delete a card."""
+        card_id = call.data["card_id"]
+        
+        await hass.async_add_executor_job(_delete_card_sync, trello_client, card_id)
+        await trello_coordinator.async_request_refresh()
+
     hass.services.async_register(
         DOMAIN, "move_card", async_move_card, schema=MOVE_CARD_SERVICE_SCHEMA
     )
@@ -90,6 +101,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
     hass.services.async_register(
         DOMAIN, "update_card", async_update_card, schema=UPDATE_CARD_SERVICE_SCHEMA
+    )
+    hass.services.async_register(
+        DOMAIN, "delete_card", async_delete_card, schema=DELETE_CARD_SERVICE_SCHEMA
     )
 
     # Frontend card is now a separate HACS plugin: ha-trello-card
@@ -132,6 +146,11 @@ def _update_card_sync(client: TrelloClient, card_id: str, name: str, description
     card = client.get_card(card_id)
     card.set_name(name)
     card.set_description(description)
+
+def _delete_card_sync(client: TrelloClient, card_id: str) -> None:
+    """Delete card synchronously."""
+    card = client.get_card(card_id)
+    card.delete()
 
 
 class TrelloAdapter:

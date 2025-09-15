@@ -8,7 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from trello import TrelloClient
 
-from .const import LOGGER, Board, List, Card
+from .const import LOGGER, Board, List, Card, CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL
 
 
 class TrelloDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Board]]):
@@ -17,14 +17,19 @@ class TrelloDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Board]]):
     config_entry: ConfigEntry
 
     def __init__(
-        self, hass: HomeAssistant, trello_client: TrelloClient, board_ids: list[str]
+        self, hass: HomeAssistant, trello_client: TrelloClient, board_ids: list[str], config_entry: ConfigEntry = None
     ) -> None:
         """Initialize the coordinator."""
+        # Get update interval from config, default to 20 seconds
+        update_interval = DEFAULT_UPDATE_INTERVAL
+        if config_entry and config_entry.options.get(CONF_UPDATE_INTERVAL):
+            update_interval = config_entry.options[CONF_UPDATE_INTERVAL]
+        
         super().__init__(
             hass=hass,
             logger=LOGGER,
             name="trello",
-            update_interval=timedelta(seconds=60),
+            update_interval=timedelta(seconds=update_interval),
         )
         self.client = trello_client
         self.board_ids = board_ids

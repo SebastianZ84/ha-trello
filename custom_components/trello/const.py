@@ -12,6 +12,10 @@ LOGGER = logging.getLogger(__package__)
 CONF_USER_ID = "user_id"
 CONF_USER_EMAIL = "user_email"
 CONF_BOARD_IDS = "board_ids"
+CONF_UPDATE_INTERVAL = "update_interval"
+
+# Default update interval in seconds
+DEFAULT_UPDATE_INTERVAL = 20
 
 
 @dataclass
