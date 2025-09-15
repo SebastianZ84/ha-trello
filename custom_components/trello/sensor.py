@@ -35,7 +35,7 @@ class TrelloSensor(CoordinatorEntity[TrelloDataUpdateCoordinator], SensorEntity)
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, board.id)},
-            name=board.name,
+            name=f"trello_{board.name.lower().replace(' ', '_')}",
             entry_type=DeviceEntryType.SERVICE,
             manufacturer="Trello",
             model="Board",
@@ -98,7 +98,7 @@ class TrelloBoardSensor(CoordinatorEntity[TrelloDataUpdateCoordinator], SensorEn
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, board.id)},
-            name=board.name,
+            name=f"trello_{board.name.lower().replace(' ', '_')}",
             entry_type=DeviceEntryType.SERVICE,
             manufacturer="Trello",
             model="Board",
