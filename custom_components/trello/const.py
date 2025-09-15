@@ -15,7 +15,7 @@ CONF_BOARD_IDS = "board_ids"
 CONF_UPDATE_INTERVAL = "update_interval"
 
 # Default update interval in seconds
-DEFAULT_UPDATE_INTERVAL = 20
+DEFAULT_UPDATE_INTERVAL = 1
 
 
 @dataclass
