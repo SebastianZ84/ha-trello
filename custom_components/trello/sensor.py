@@ -18,6 +18,7 @@ class TrelloSensor(CoordinatorEntity[TrelloDataUpdateCoordinator], SensorEntity)
     _attr_native_unit_of_measurement = "Cards"
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_has_entity_name = True
+    _attr_icon = "mdi:format-list-bulleted"
 
     def __init__(
         self,
@@ -82,6 +83,7 @@ class TrelloBoardSensor(CoordinatorEntity[TrelloDataUpdateCoordinator], SensorEn
     _attr_native_unit_of_measurement = "Lists"
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_has_entity_name = True
+    _attr_icon = "mdi:view-dashboard"
 
     def __init__(
         self,
