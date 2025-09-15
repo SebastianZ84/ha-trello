@@ -31,7 +31,7 @@ class TrelloSensor(CoordinatorEntity[TrelloDataUpdateCoordinator], SensorEntity)
         self.board = board
         self.list_id = list_.id
         self._attr_unique_id = f"list_{list_.id}".lower()
-        self._attr_name = list_.name
+        self._attr_name = f"Trello List {list_.name}"
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, board.id)},
@@ -72,7 +72,7 @@ class TrelloSensor(CoordinatorEntity[TrelloDataUpdateCoordinator], SensorEntity)
     def _handle_coordinator_update(self) -> None:
         if self.available:
             board = self.coordinator.data[self.board.id]
-            self._attr_name = board.lists[self.list_id].name
+            self._attr_name = f"Trello List {board.lists[self.list_id].name}"
             self.async_write_ha_state()
         super()._handle_coordinator_update()
 
@@ -94,7 +94,7 @@ class TrelloBoardSensor(CoordinatorEntity[TrelloDataUpdateCoordinator], SensorEn
         super().__init__(coordinator)
         self.board = board
         self._attr_unique_id = f"board_{board.id}".lower()
-        self._attr_name = f"{board.name} Board"
+        self._attr_name = f"Trello Board {board.name}"
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, board.id)},
